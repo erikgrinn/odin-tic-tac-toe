@@ -1,0 +1,40 @@
+body {
+    display: flex;
+    flex-direction: column;
+    height:100vh;
+    margin: 0;
+    background-color: rgb(157, 59, 18);
+    align-items: center;
+    justify-content: center;
+}
+
+#board {
+    margin: auto;
+    height: 500px;
+    width: 500px;
+    display: grid;
+    grid-template-columns: 1fr repeat(3, 5fr);
+    grid-template-rows: repeat(3, 5fr) 1fr;
+    /* box-sizing: border-box; */
+    justify-content: center;
+    align-items: center;
+    /* margin-right: 1fr; */
+    gap: 4px;
+}
+
+#board div {
+    display: grid;
+    /* box-sizing: border-box; */
+    height: 100%;
+    width: 100%;
+    border: 4px solid #ddd; 
+    align-items: center;
+    justify-content: center;
+}
+
+#board .letr,
+#board .num {
+    border: none;
+    font-size: 30px;
+}
+
