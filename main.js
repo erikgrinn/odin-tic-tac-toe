@@ -23,12 +23,12 @@ let userInput;
 function game(player1, player2) {
 
      if (player1.turn) {
-        userInput = prompt(`${player1}: Choose your position (ex. B2)`)
+        userInput = prompt(`${player1.name}: Choose your position (ex. B2)`)
         if (gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] === null && player2.marker) {
             gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] = player1.marker
          }
      } else if (player2.turn) {
-        userInput = prompt(`${player2}: Choose your position (ex. B2)`)
+        userInput = prompt(`${player2.name}: Choose your position (ex. B2)`)
         if (gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] === null && player1.marker) {
             gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] = player2.marker
          }
