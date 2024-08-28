@@ -87,15 +87,10 @@ function handleClick(event) {
 function handleHover(event) {
     const currentPlayer = player1.turn ? player1 : player2
     event.target.innerHTML = currentPlayer.marker;
-    // event.target.style.cssText = 
-    //     'background-color: #ddd',
-    //     'cursor: pointer'
 }
 
 function handleMouseOut(event) {
     event.target.innerHTML = '';
-    // event.target.style.cssText = 
-    //     'background-color: none'
 }
 
 function winState() {
@@ -134,5 +129,3 @@ function resetGame() {
         item.addEventListener('mouseout', handleMouseOut);
     });
 }
-
-// alert(`Begin!`);
