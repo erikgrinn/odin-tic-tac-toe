@@ -21,6 +21,7 @@ const player1 = createPlayer('Enter Player 1 name', 'X');
 const player2 = createPlayer('Enter Player 2 name', 'O');
 player1.turn = true
 
+let count = 0
 
 function game(player1, player2) {
     let userInput;
@@ -63,10 +64,14 @@ function game(player1, player2) {
     if (winState(gameboard)) {
         if (player1.turn) {
             return `${player1.name} wins!`;
-        } else {
+        } else if (player2.turn) {
             return `${player2.name} wins!`;
-        }
+        } 
+    } else if (count === 8) {
+        return "It's a tie!"
     } else {
+        console.log(gameboard)
+        count++
         if (player1.turn) {
             player1.turn = false;
             player2.turn = true;
