@@ -2,13 +2,14 @@ body {
     display: flex;
     flex-direction: column;
     height:100vh;
-    /* margin: 0; */
+    margin: 0;
     background-color: rgb(157, 59, 18);
     align-items: center;
     justify-content: center;
 }
 
 .scores {
+    margin-top: 75px;
     display: flex;
     width: 50%;
     font-size: 54px;
@@ -26,7 +27,7 @@ body {
     /* box-sizing: border-box; */
     justify-content: center;
     align-items: center;
-    /* margin-right: 1fr; */
+    padding-right: 34px;
     gap: 4px;
 }
 

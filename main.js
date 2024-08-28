@@ -29,21 +29,24 @@ function createPlayer(promptMessage, marker) {
     return player;
 }
 
+// set initial players and scores
 const player1 = createPlayer('Enter Player 1 name', 'X');
 const player2 = createPlayer('Enter Player 2 name', 'O');
 const scoreDiv1 = document.querySelector('.player1')
 scoreDiv1.innerHTML = `${player1.name}: ${player1.score}`
 const scoreDiv2 = document.querySelector('.player2')
 scoreDiv2.innerHTML = `${player2.name}: ${player2.score}`
+
+// set initial turn
 player1.turn = true;
 
 const gridItems = document.querySelectorAll('.cell');
 
-let count = 0;
-
 gridItems.forEach(item => {
     item.addEventListener('click', () => handleClick(item));
 });
+
+let count = 0;
 
 function handleClick(item) {
     const currentPlayer = player1.turn ? player1 : player2;
@@ -110,5 +113,5 @@ function resetGame() {
     });
 }
 
-alert(`${player1.name}'s turn. Pick a tile`);
+// alert(`Begin!`);
 
