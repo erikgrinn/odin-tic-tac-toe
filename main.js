@@ -1,14 +1,8 @@
 const gameboard = {
-    A: [' ', ' ',' '],
-    B: [' ', ' ',' '],
-    C: [' ', ' ',' '],
+    A: [null, null, null],
+    B: [null, null, null],
+    C: [null, null, null],
 }
-
-// const gameboard = function (position){
-//     row1: [' ', ' ',' '],
-//     row2: [' ', ' ',' '],
-//     row3: [' ', ' ',' '],
-// }
 
 function Player(name, marker) {
     this.name = name
@@ -20,28 +14,32 @@ function Player(name, marker) {
 
 }
 
-// const player1 = new Player(prompt('Enter Player 1 name'), 'X')
-// const player2 = new Player(prompt('Enter Player 2 name'), '0')
-// player1.turn = true
+const player1 = new Player(prompt('Enter Player 1 name'), 'X')
+const player2 = new Player(prompt('Enter Player 2 name'), '0')
+player1.turn = true
 
-console.log(player1, player2, gameboard)
 
-// gameboard.A[2] = player1.marker
-console.log(gameboard["A"])
 
 let userInput;
+// console.log(gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1])
 function game(player1, player2) {
      if (player1.turn) {
         userInput = prompt(`${player1}: Choose your position (ex. B2)`)
-        if (gameboard[userInput.charAt(0)][parseInt(userInput.charAt(1))] === (' ') && player2.marker) {
-            gameboard[userInput.charAt(0)][parseInt(userInput.charAt(1))] = player1.marker
+        if (gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] === null && player2.marker) {
+            gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] = player1.marker
+            console.log(gameboard)
+            player1.turn = false
+            player2.turn = true
          }
      } else if (player2.turn) {
         userInput = prompt(`${player2}: Choose your position (ex. B2)`)
-        if (gameboard[userInput.charAt(0)][parseInt(userInput.charAt(1))] === (' ') && player1.marker) {
-            gameboard[userInput.charAt(0)][parseInt(userInput.charAt(1))] = player2.marker
+        if (gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] === null && player1.marker) {
+            gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] = player2.marker
+            console.log(gameboard)
+            player2.turn = false
+            player1.turn = true
          }
      }
 }
 
-// game(player1, player2)
+game(player1, player2)
