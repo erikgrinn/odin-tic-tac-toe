@@ -116,16 +116,21 @@ function winState() {
 }
 
 function resetGame() {
-    count = 0;
-    player1.turn = true;
-    player2.turn = false;
-    for (let row in gameboard) {
-        gameboard[row] = [null, null, null];
-    }
-    gridItems.forEach(item => {
-        item.innerHTML = '';
-        item.removeAttribute('clicked');
-        item.addEventListener('mouseover', handleHover);
-        item.addEventListener('mouseout', handleMouseOut);
-    });
+    const replayBtn = document.querySelector('.replay')
+    replayBtn.style.visibility = 'visible'
+    replayBtn.addEventListener('click', () => {
+        count = 0;
+        player1.turn = true;
+        player2.turn = false;
+        for (let row in gameboard) {
+            gameboard[row] = [null, null, null];
+        }
+        gridItems.forEach(item => {
+            item.innerHTML = '';
+            item.removeAttribute('clicked');
+            item.addEventListener('mouseover', handleHover);
+            item.addEventListener('mouseout', handleMouseOut);
+        });
+        replayBtn.style.visibility = 'hidden'
+    })
 }

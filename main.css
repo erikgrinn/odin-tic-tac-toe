@@ -8,13 +8,20 @@ body {
     justify-content: center;
 }
 
-.scores {
+.header {
     margin-top: 75px;
     display: flex;
     width: 50%;
     font-size: 54px;
     align-items: center;
     justify-content: space-around;
+}
+
+.header .replay {
+    visibility: hidden;
+    background-color: #ddd;
+    height: 54px;
+    border-radius: 8px;
 }
 
 #board {
