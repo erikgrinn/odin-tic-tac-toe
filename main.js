@@ -4,14 +4,23 @@ const gameboard = {
     C: [null, null, null],
 };
 
-function updateDisplay(player, row, col) {
+function updateBoard(player, row, col) {
     document.getElementById(row + (col)).innerHTML = player.marker;
+}
+
+function updateScore(player) {
+    if (player1.turn) {
+        scoreDiv1.innerHTML = `${player1.name}: ${player1.score}`
+    } else if (player2.turn) {
+        scoreDiv2.innerHTML = `${player2.name}: ${player2.score}`
+    }
 }
 
 function Player(name, marker) {
     this.name = name;
     this.marker = marker;
     this.turn = false;
+    this.score = 0
 }
 
 function createPlayer(promptMessage, marker) {
@@ -22,6 +31,10 @@ function createPlayer(promptMessage, marker) {
 
 const player1 = createPlayer('Enter Player 1 name', 'X');
 const player2 = createPlayer('Enter Player 2 name', 'O');
+const scoreDiv1 = document.querySelector('.player1')
+scoreDiv1.innerHTML = `${player1.name}: ${player1.score}`
+const scoreDiv2 = document.querySelector('.player2')
+scoreDiv2.innerHTML = `${player2.name}: ${player2.score}`
 player1.turn = true;
 
 const gridItems = document.querySelectorAll('.cell');
@@ -39,13 +52,15 @@ function handleClick(item) {
 
         let row = item.id.charAt(0);
         let col = parseInt(item.id.charAt(1));
-        updateDisplay(currentPlayer, row, col);
+        updateBoard(currentPlayer, row, col);
         gameboard[row][col - 1] = currentPlayer.marker;
 
         // Small delay to allow the UI to update before checking win state
         setTimeout(() => {
             if (winState()) {
                 alert(`${currentPlayer.name} wins!`);
+                currentPlayer.score++
+                updateScore(currentPlayer)
                 resetGame();
             } else if (count === 8) {
                 alert("It's a tie!");
