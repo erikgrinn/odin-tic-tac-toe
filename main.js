@@ -55,7 +55,7 @@ function handleClick(item) {
                 player1.turn = !player1.turn;
                 player2.turn = !player2.turn;
             }
-        }, 50); // Delay of 50ms
+        }, 50); 
     } else {
         alert('The cell is already taken!');
     }
