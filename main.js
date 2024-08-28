@@ -4,11 +4,14 @@ const gameboard = {
     C: [null, null, null],
 }
 
+function updateDisplay(player, row, col) {
+    document.getElementById(row+(col+1)).innerHTML = player.marker
+}
+
 function Player(name, marker) {
     this.name = name
     this.marker = marker
     this.turn = false
-
 }
 
 function createPlayer(promptMessage, marker) {
@@ -48,6 +51,7 @@ function game(player1, player2) {
     if (player1.turn) {
         if (gameboard[row][col] === null) {
             gameboard[row][col] = player1.marker;
+            updateDisplay(player1, row, col)
         } else {
             alert('Cell already occupied');
             return game(player1, player2);
@@ -55,6 +59,7 @@ function game(player1, player2) {
     } else if (player2.turn) {
         if (gameboard[row][col] === null) {
             gameboard[row][col] = player2.marker;
+            updateDisplay(player2, row, col)
         } else {
             alert('Cell already occupied');
             return game(player1, player2);
@@ -70,7 +75,6 @@ function game(player1, player2) {
     } else if (count === 8) {
         return "It's a tie!"
     } else {
-        console.log(gameboard)
         count++
         if (player1.turn) {
             player1.turn = false;
@@ -83,7 +87,7 @@ function game(player1, player2) {
     }
 }
 
-function winState(gameboard) {
+function winState() {
     let col1 = gameboard.A[0] + gameboard.B[0] + gameboard.C[0]  
     let col2 = gameboard.A[1] + gameboard.B[1] + gameboard.C[1]
     let col3 = gameboard.A[2] + gameboard.B[2] + gameboard.C[2]
