@@ -38,3 +38,8 @@ body {
     font-size: 30px;
 }
 
+#board .cell:hover{
+    background-color: #ddd;
+    cursor: pointer;
+}
+
