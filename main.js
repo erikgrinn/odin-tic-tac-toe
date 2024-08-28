@@ -9,49 +9,72 @@ function Player(name, marker) {
     this.marker = marker
     this.turn = false
 
-    // const player1 = (prompt('Enter Player 1 name'), 'X')
-    // const player2 = (prompt('Enter Player 2 name'), '0')
-
 }
 
+function createPlayer(promptMessage, marker) {
+    const name = prompt(promptMessage);
+    const player = new Player(name, marker);
+    return player;
+}
 
-const player1 = new Player(prompt('Enter Player 1 name'), 'X')
-const player2 = new Player(prompt('Enter Player 2 name'), '0')
+const player1 = createPlayer('Enter Player 1 name', 'X');
+const player2 = createPlayer('Enter Player 2 name', 'O');
 player1.turn = true
 
-let userInput;
+
 function game(player1, player2) {
+    let userInput;
 
-     if (player1.turn) {
-        userInput = prompt(`${player1.name}: Choose your position (ex. B2)`)
-        if (gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] === null && player2.marker) {
-            gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] = player1.marker
-         }
-     } else if (player2.turn) {
-        userInput = prompt(`${player2.name}: Choose your position (ex. B2)`)
-        if (gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] === null && player1.marker) {
-            gameboard[userInput.charAt(0).toUpperCase()][parseInt(userInput.charAt(1))-1] = player2.marker
-         }
-     }
+    if (player1.turn) {
+        userInput = prompt(`${player1.name}: Choose your position (ex. B2)`);
+    } else if (player2.turn) {
+        userInput = prompt(`${player2.name}: Choose your position (ex. B2)`);
+    }
 
-     console.log(gameboard)
+    // Input validation
+    if (userInput.length !== 2 ||
+        !['A', 'B', 'C'].includes(userInput.charAt(0).toUpperCase()) ||
+        isNaN(userInput.charAt(1)) ||
+        parseInt(userInput.charAt(1)) < 1 ||
+        parseInt(userInput.charAt(1)) > 3) {
+        alert('Input not valid');
+        return game(player1, player2)
+    }
 
-     if (winState(gameboard)) {
-        if (player1.turn) {
-            return `${player1.name} wins!`
+    const row = userInput.charAt(0).toUpperCase();
+    const col = parseInt(userInput.charAt(1)) - 1;
+
+    if (player1.turn) {
+        if (gameboard[row][col] === null) {
+            gameboard[row][col] = player1.marker;
         } else {
-            return `${player2.name} wins!`
+            alert('Cell already occupied');
+            return game(player1, player2);
+        }
+    } else if (player2.turn) {
+        if (gameboard[row][col] === null) {
+            gameboard[row][col] = player2.marker;
+        } else {
+            alert('Cell already occupied');
+            return game(player1, player2);
+        }
+    }
+
+    if (winState(gameboard)) {
+        if (player1.turn) {
+            return `${player1.name} wins!`;
+        } else {
+            return `${player2.name} wins!`;
         }
     } else {
         if (player1.turn) {
-            player1.turn = false
-            player2.turn = true
+            player1.turn = false;
+            player2.turn = true;
+        } else if (player2.turn) {
+            player2.turn = false;
+            player1.turn = true;
         }
-        else if (player2.turn) {
-            player2.turn = false
-            player1.turn = true
-        }
-        return game(player1, player2) // recursive call, needed to display win message
+        return game(player1, player2); // recursive call, needed to display win message
     }
 }
 
