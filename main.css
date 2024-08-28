@@ -11,17 +11,29 @@ body {
 .header {
     margin-top: 75px;
     display: flex;
-    width: 50%;
+    width: 100%;
     font-size: 54px;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
+    padding: 0 20px;
 }
+
+.header .player1, 
+.header .player2 {
+    flex: 1;
+    display: flex;
+    justify-content: center; 
+}
+
 
 .header .replay {
     visibility: hidden;
     background-color: #ddd;
     height: 54px;
     border-radius: 8px;
+    padding: 0 20px;
+    font-size: 18px;
+    cursor: pointer;
 }
 
 #board {
