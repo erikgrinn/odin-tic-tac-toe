@@ -43,18 +43,23 @@ player1.turn = true;
 const gridItems = document.querySelectorAll('.cell');
 
 gridItems.forEach(item => {
-    item.addEventListener('click', () => handleClick(item));
+    item.addEventListener('click', handleClick);
+    item.addEventListener('mouseover', handleHover)
+    item.addEventListener('mouseout', handleMouseOut)
 });
+
 
 let count = 0;
 
-function handleClick(item) {
+function handleClick(event) {
     const currentPlayer = player1.turn ? player1 : player2;
+    if ((event.target.innerHTML === currentPlayer.marker) && !event.target.getAttribute('clicked')) {
+        event.target.setAttribute('clicked', true)
+        event.target.removeEventListener('mouseover', handleHover)
+        event.target.removeEventListener('mouseout', handleMouseOut)
 
-    if (item.innerHTML === '') {
-
-        let row = item.id.charAt(0);
-        let col = parseInt(item.id.charAt(1));
+        let row = event.target.id.charAt(0);
+        let col = parseInt(event.target.id.charAt(1));
         updateBoard(currentPlayer, row, col);
         gameboard[row][col - 1] = currentPlayer.marker;
 
@@ -77,6 +82,20 @@ function handleClick(item) {
     } else {
         alert('The cell is already taken!');
     }
+}
+
+function handleHover(event) {
+    const currentPlayer = player1.turn ? player1 : player2
+    event.target.innerHTML = currentPlayer.marker;
+    // event.target.style.cssText = 
+    //     'background-color: #ddd',
+    //     'cursor: pointer'
+}
+
+function handleMouseOut(event) {
+    event.target.innerHTML = '';
+    // event.target.style.cssText = 
+    //     'background-color: none'
 }
 
 function winState() {
@@ -110,8 +129,10 @@ function resetGame() {
     }
     gridItems.forEach(item => {
         item.innerHTML = '';
+        item.removeAttribute('clicked');
+        item.addEventListener('mouseover', handleHover);
+        item.addEventListener('mouseout', handleMouseOut);
     });
 }
 
 // alert(`Begin!`);
-
