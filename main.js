@@ -1,4 +1,3 @@
-// grid items event listeners and count
 const grid = (function() {
     const gridItems = document.querySelectorAll('.cell');
 
@@ -74,7 +73,6 @@ const game = (function() {
     function updateBoard(player, row, col) {
         gameboard[row][col - 1] = player.marker;
         document.getElementById(row + (col)).innerHTML = player.marker;
-        return gameboard
     }
 
     function winState() {
@@ -106,7 +104,7 @@ const game = (function() {
         scoreDiv2.innerHTML = `${players.player2.name}: ${players.player2.score}`
     }
 
-    function resetGame() {
+    function resetGame(winner) {
         const replayBtn = document.querySelector('.replay')
         replayBtn.style.visibility = 'visible'
         replayBtn.addEventListener('click', () => {
@@ -118,6 +116,7 @@ const game = (function() {
             grid.resetGrid()
             grid.addListeners()
             replayBtn.style.visibility = 'hidden'
+            winner.style.visibility = 'hidden'
         })
     }
 
@@ -137,17 +136,20 @@ function handleClick(event) {
         let col = parseInt(event.target.id.charAt(1));
         game.updateBoard(currentPlayer, row, col);
 
-        // Small delay to allow the UI to update before checking win state
+        const winner = document.querySelector('.winner')
 
         if (game.winState()) {
-            alert(`${currentPlayer.name} wins!`);
+            winner.innerHTML = `${currentPlayer.name} won!`
+            winner.style.visibility = 'visible'
+            console.log(winner)
             currentPlayer.score++
             game.scores()
             grid.removeEventListeners()
-            game.resetGame();
+            game.resetGame(winner);
         } else if (grid.fullGrid() == 9) {
-            alert("It's a tie!");
-            game.resetGame();
+            winner.innerHTML = `It's a tie!`
+            winner.style.visibility = 'visible'
+            game.resetGame(winner);
         } else {
             game.players.player1.turn = !game.players.player1.turn;
             game.players.player2.turn = !game.players.player2.turn;
