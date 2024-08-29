@@ -1,3 +1,4 @@
+// grid items event listeners and count
 const grid = (function() {
     const gridItems = document.querySelectorAll('.cell');
 
@@ -6,6 +7,14 @@ const grid = (function() {
             item.addEventListener('click', handleClick);
             item.addEventListener('mouseover', handleHover);
             item.addEventListener('mouseout', handleMouseOut);
+        });
+    }
+
+    function removeEventListeners() {
+        gridItems.forEach(item => {
+            item.removeEventListener('click', handleClick);
+            item.removeEventListener('mouseover', handleHover);
+            item.removeEventListener('mouseout', handleMouseOut);
         });
     }
 
@@ -30,12 +39,8 @@ const grid = (function() {
 
     addListeners()
 
-    return {
-        addListeners,
-        fullGrid,
-        resetGrid,
+    return {addListeners, removeEventListeners, fullGrid, resetGrid};
 
-    };
 })();
 
 const players = (function () {
@@ -45,31 +50,6 @@ const players = (function () {
 
     return {player1, player2}
 })();
-
-function scores(player) {
-    const scoreDiv1 = document.querySelector('.player1')
-    scoreDiv1.innerHTML = `${players.player1.name}: ${players.player1.score}`
-    const scoreDiv2 = document.querySelector('.player2')
-    scoreDiv2.innerHTML = `${players.player2.name}: ${players.player2.score}`
-}
-
-// const game = (function() {
-//     const gameboard = {
-//     A: [null, null, null],
-//     B: [null, null, null],
-//     C: [null, null, null],
-//     }
-// })();
-
-const gameboard = {
-        A: [null, null, null],
-        B: [null, null, null],
-        C: [null, null, null],
-}
-
-function updateBoard(player, row, col) {
-    document.getElementById(row + (col)).innerHTML = player.marker;
-}
 
 function Player(name, marker) {
     this.name = name;
@@ -84,6 +64,68 @@ function createPlayer(promptMessage, marker) {
     return player;
 }
 
+function scores(player1, player2) {
+    const scoreDiv1 = document.querySelector('.player1')
+    scoreDiv1.innerHTML = `${players.player1.name}: ${players.player1.score}`
+    const scoreDiv2 = document.querySelector('.player2')
+    scoreDiv2.innerHTML = `${players.player2.name}: ${players.player2.score}`
+}
+
+const game = (function() {
+    const gameboard = {
+    A: [null, null, null],
+    B: [null, null, null],
+    C: [null, null, null],
+    }
+
+    scores()
+
+    function updateBoard(player, row, col) {
+        gameboard[row][col - 1] = player.marker;
+        document.getElementById(row + (col)).innerHTML = player.marker;
+        return gameboard
+    }
+
+    function winState() {
+        let col1 = gameboard.A[0] + gameboard.B[0] + gameboard.C[0];
+        let col2 = gameboard.A[1] + gameboard.B[1] + gameboard.C[1];
+        let col3 = gameboard.A[2] + gameboard.B[2] + gameboard.C[2];
+        let row1 = gameboard.A[0] + gameboard.A[1] + gameboard.A[2];
+        let row2 = gameboard.B[0] + gameboard.B[1] + gameboard.B[2];
+        let row3 = gameboard.C[0] + gameboard.C[1] + gameboard.C[2];
+        let dia1 = gameboard.A[0] + gameboard.B[1] + gameboard.C[2];
+        let dia2 = gameboard.C[0] + gameboard.B[1] + gameboard.A[2];
+    
+        return (
+            col1 === 'XXX' || col1 === 'OOO' ||
+            col2 === 'XXX' || col2 === 'OOO' ||
+            col3 === 'XXX' || col3 === 'OOO' ||
+            row1 === 'XXX' || row1 === 'OOO' ||
+            row2 === 'XXX' || row2 === 'OOO' ||
+            row3 === 'XXX' || row3 === 'OOO' ||
+            dia1 === 'XXX' || dia1 === 'OOO' ||
+            dia2 === 'XXX' || dia2 === 'OOO'
+        );
+    }
+
+    function resetGame() {
+        const replayBtn = document.querySelector('.replay')
+        replayBtn.style.visibility = 'visible'
+        replayBtn.addEventListener('click', () => {
+            count = 0;
+            players.player1.turn = true;
+            players.player2.turn = false;
+            for (let row in gameboard) {
+                gameboard[row] = [null, null, null];
+            }
+            grid.resetGrid()
+            replayBtn.style.visibility = 'hidden'
+        })
+    }
+
+    return {updateBoard, winState, resetGame}
+})();
+
 function handleClick(event) {
     const currentPlayer = players.player1.turn ? players.player1 : players.player2;
     if ((event.target.innerHTML === currentPlayer.marker) && !event.target.getAttribute('clicked')) {
@@ -93,24 +135,24 @@ function handleClick(event) {
 
         let row = event.target.id.charAt(0);
         let col = parseInt(event.target.id.charAt(1));
-        updateBoard(currentPlayer, row, col);
-        gameboard[row][col - 1] = currentPlayer.marker;
+        game.updateBoard(currentPlayer, row, col);
 
         // Small delay to allow the UI to update before checking win state
-        setTimeout(() => {
-            if (winState()) {
-                alert(`${currentPlayer.name} wins!`);
-                currentPlayer.score++
-                scores(currentPlayer)
-                resetGame();
-            } else if (grid.fullGrid() == 9) {
-                alert("It's a tie!");
-                resetGame();
-            } else {
-                players.player1.turn = !players.player1.turn;
-                players.player2.turn = !players.player2.turn;
-            }
-        }, 50); 
+
+        if (game.winState()) {
+            alert(`${currentPlayer.name} wins!`);
+            currentPlayer.score++
+            scores(currentPlayer)
+            grid.removeEventListeners()
+            game.resetGame();
+        } else if (grid.fullGrid() == 9) {
+            alert("It's a tie!");
+            resetGame();
+        } else {
+            players.player1.turn = !players.player1.turn;
+            players.player2.turn = !players.player2.turn;
+        }
+
     } else {
         alert('The cell is already taken!');
     }
@@ -123,41 +165,4 @@ function handleHover(event) {
 
 function handleMouseOut(event) {
     event.target.innerHTML = '';
-}
-
-function winState() {
-    let col1 = gameboard.A[0] + gameboard.B[0] + gameboard.C[0];
-    let col2 = gameboard.A[1] + gameboard.B[1] + gameboard.C[1];
-    let col3 = gameboard.A[2] + gameboard.B[2] + gameboard.C[2];
-    let row1 = gameboard.A[0] + gameboard.A[1] + gameboard.A[2];
-    let row2 = gameboard.B[0] + gameboard.B[1] + gameboard.B[2];
-    let row3 = gameboard.C[0] + gameboard.C[1] + gameboard.C[2];
-    let dia1 = gameboard.A[0] + gameboard.B[1] + gameboard.C[2];
-    let dia2 = gameboard.C[0] + gameboard.B[1] + gameboard.A[2];
-
-    return (
-        col1 === 'XXX' || col1 === 'OOO' ||
-        col2 === 'XXX' || col2 === 'OOO' ||
-        col3 === 'XXX' || col3 === 'OOO' ||
-        row1 === 'XXX' || row1 === 'OOO' ||
-        row2 === 'XXX' || row2 === 'OOO' ||
-        row3 === 'XXX' || row3 === 'OOO' ||
-        dia1 === 'XXX' || dia1 === 'OOO' ||
-        dia2 === 'XXX' || dia2 === 'OOO'
-    );
-}
-
-function resetGame() {
-    const replayBtn = document.querySelector('.replay')
-    replayBtn.style.visibility = 'visible'
-    replayBtn.addEventListener('click', () => {
-        count = 0;
-        players.player1.turn = true;
-        players.player2.turn = false;
-        for (let row in gameboard) {
-            gameboard[row] = [null, null, null];
-        }
-        grid.resetGrid()
-        replayBtn.style.visibility = 'hidden'
-    })
 }
