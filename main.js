@@ -1,3 +1,63 @@
+
+// IIFE
+const grid = (function() {
+    const gridItems = document.querySelectorAll('.cell');
+
+    function addListeners() {
+        gridItems.forEach(item => {
+            item.addEventListener('click', handleClick);
+            item.addEventListener('mouseover', handleHover);
+            item.addEventListener('mouseout', handleMouseOut);
+        });
+    }
+
+    function fullGrid() {
+        let count = 0
+        gridItems.forEach(item => {
+            if (item.innerHTML != '') {
+                count++
+            }
+        })
+        return count
+    }
+
+    function resetGrid() {
+        gridItems.forEach(item => {
+            item.innerHTML = '';
+            item.removeAttribute('clicked');
+            item.addEventListener('mouseover', handleHover);
+            item.addEventListener('mouseout', handleMouseOut);
+        });
+    }
+
+    addListeners()
+
+    return {
+        addListeners,
+        fullGrid,
+        resetGrid,
+
+    };
+})();
+
+
+const players = (function () {
+    const player1 = createPlayer('Enter Player 1 name', 'X');
+    const player2 = createPlayer('Enter Player 2 name', 'O');
+    player1.turn = true;
+
+    return {player1, player2}
+})();
+
+
+
+function scores(player) {
+    const scoreDiv1 = document.querySelector('.player1')
+    scoreDiv1.innerHTML = `${players.player1.name}: ${players.player1.score}`
+    const scoreDiv2 = document.querySelector('.player2')
+    scoreDiv2.innerHTML = `${players.player2.name}: ${players.player2.score}`
+}
+
 const gameboard = {
     A: [null, null, null],
     B: [null, null, null],
@@ -6,14 +66,6 @@ const gameboard = {
 
 function updateBoard(player, row, col) {
     document.getElementById(row + (col)).innerHTML = player.marker;
-}
-
-function updateScore(player) {
-    if (player1.turn) {
-        scoreDiv1.innerHTML = `${player1.name}: ${player1.score}`
-    } else if (player2.turn) {
-        scoreDiv2.innerHTML = `${player2.name}: ${player2.score}`
-    }
 }
 
 function Player(name, marker) {
@@ -29,30 +81,9 @@ function createPlayer(promptMessage, marker) {
     return player;
 }
 
-// set initial players and scores
-const player1 = createPlayer('Enter Player 1 name', 'X');
-const player2 = createPlayer('Enter Player 2 name', 'O');
-const scoreDiv1 = document.querySelector('.player1')
-scoreDiv1.innerHTML = `${player1.name}: ${player1.score}`
-const scoreDiv2 = document.querySelector('.player2')
-scoreDiv2.innerHTML = `${player2.name}: ${player2.score}`
-
-// set initial turn
-player1.turn = true;
-
-const gridItems = document.querySelectorAll('.cell');
-
-gridItems.forEach(item => {
-    item.addEventListener('click', handleClick);
-    item.addEventListener('mouseover', handleHover)
-    item.addEventListener('mouseout', handleMouseOut)
-});
-
-
-let count = 0;
-
 function handleClick(event) {
-    const currentPlayer = player1.turn ? player1 : player2;
+    const currentPlayer = players.player1.turn ? players.player1 : players.player2;
+    console.log(currentPlayer)
     if ((event.target.innerHTML === currentPlayer.marker) && !event.target.getAttribute('clicked')) {
         event.target.setAttribute('clicked', true)
         event.target.removeEventListener('mouseover', handleHover)
@@ -68,15 +99,14 @@ function handleClick(event) {
             if (winState()) {
                 alert(`${currentPlayer.name} wins!`);
                 currentPlayer.score++
-                updateScore(currentPlayer)
+                scores(currentPlayer)
                 resetGame();
-            } else if (count === 8) {
+            } else if (grid.fullGrid() == 9) {
                 alert("It's a tie!");
                 resetGame();
             } else {
-                count++;
-                player1.turn = !player1.turn;
-                player2.turn = !player2.turn;
+                players.player1.turn = !players.player1.turn;
+                players.player2.turn = !players.player2.turn;
             }
         }, 50); 
     } else {
@@ -85,7 +115,7 @@ function handleClick(event) {
 }
 
 function handleHover(event) {
-    const currentPlayer = player1.turn ? player1 : player2
+    const currentPlayer = players.player1.turn ? players.player1 : players.player2;
     event.target.innerHTML = currentPlayer.marker;
 }
 
@@ -120,17 +150,12 @@ function resetGame() {
     replayBtn.style.visibility = 'visible'
     replayBtn.addEventListener('click', () => {
         count = 0;
-        player1.turn = true;
-        player2.turn = false;
+        players.player1.turn = true;
+        players.player2.turn = false;
         for (let row in gameboard) {
             gameboard[row] = [null, null, null];
         }
-        gridItems.forEach(item => {
-            item.innerHTML = '';
-            item.removeAttribute('clicked');
-            item.addEventListener('mouseover', handleHover);
-            item.addEventListener('mouseout', handleMouseOut);
-        });
+        grid.resetGrid()
         replayBtn.style.visibility = 'hidden'
     })
 }
