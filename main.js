@@ -43,34 +43,6 @@ const grid = (function() {
 
 })();
 
-const players = (function () {
-    const player1 = createPlayer('Enter Player 1 name', 'X');
-    const player2 = createPlayer('Enter Player 2 name', 'O');
-    player1.turn = true;
-
-    return {player1, player2}
-})();
-
-function Player(name, marker) {
-    this.name = name;
-    this.marker = marker;
-    this.turn = false;
-    this.score = 0
-}
-
-function createPlayer(promptMessage, marker) {
-    const name = prompt(promptMessage);
-    const player = new Player(name, marker);
-    return player;
-}
-
-function scores(player1, player2) {
-    const scoreDiv1 = document.querySelector('.player1')
-    scoreDiv1.innerHTML = `${players.player1.name}: ${players.player1.score}`
-    const scoreDiv2 = document.querySelector('.player2')
-    scoreDiv2.innerHTML = `${players.player2.name}: ${players.player2.score}`
-}
-
 const game = (function() {
     const gameboard = {
     A: [null, null, null],
@@ -78,7 +50,26 @@ const game = (function() {
     C: [null, null, null],
     }
 
-    scores()
+    const players = (function () {
+        const player1 = createPlayer('Enter Player 1 name', 'X');
+        const player2 = createPlayer('Enter Player 2 name', 'O');
+        player1.turn = true;
+    
+        return {player1, player2}
+    })();
+    
+    function Player(name, marker) {
+        this.name = name;
+        this.marker = marker;
+        this.turn = false;
+        this.score = 0
+    }
+    
+    function createPlayer(promptMessage, marker) {
+        const name = prompt(promptMessage);
+        const player = new Player(name, marker);
+        return player;
+    }
 
     function updateBoard(player, row, col) {
         gameboard[row][col - 1] = player.marker;
@@ -108,26 +99,35 @@ const game = (function() {
         );
     }
 
+    function scores() {
+        const scoreDiv1 = document.querySelector('.player1')
+        scoreDiv1.innerHTML = `${players.player1.name}: ${players.player1.score}`
+        const scoreDiv2 = document.querySelector('.player2')
+        scoreDiv2.innerHTML = `${players.player2.name}: ${players.player2.score}`
+    }
+
     function resetGame() {
         const replayBtn = document.querySelector('.replay')
         replayBtn.style.visibility = 'visible'
         replayBtn.addEventListener('click', () => {
-            count = 0;
             players.player1.turn = true;
             players.player2.turn = false;
             for (let row in gameboard) {
                 gameboard[row] = [null, null, null];
             }
             grid.resetGrid()
+            grid.addListeners()
             replayBtn.style.visibility = 'hidden'
         })
     }
 
-    return {updateBoard, winState, resetGame}
+    scores()
+
+    return {players, updateBoard, winState, scores, resetGame}
 })();
 
 function handleClick(event) {
-    const currentPlayer = players.player1.turn ? players.player1 : players.player2;
+    const currentPlayer = game.players.player1.turn ? game.players.player1 : game.players.player2;
     if ((event.target.innerHTML === currentPlayer.marker) && !event.target.getAttribute('clicked')) {
         event.target.setAttribute('clicked', true)
         event.target.removeEventListener('mouseover', handleHover)
@@ -142,15 +142,15 @@ function handleClick(event) {
         if (game.winState()) {
             alert(`${currentPlayer.name} wins!`);
             currentPlayer.score++
-            scores(currentPlayer)
+            game.scores()
             grid.removeEventListeners()
             game.resetGame();
         } else if (grid.fullGrid() == 9) {
             alert("It's a tie!");
-            resetGame();
+            game.resetGame();
         } else {
-            players.player1.turn = !players.player1.turn;
-            players.player2.turn = !players.player2.turn;
+            game.players.player1.turn = !game.players.player1.turn;
+            game.players.player2.turn = !game.players.player2.turn;
         }
 
     } else {
@@ -159,7 +159,7 @@ function handleClick(event) {
 }
 
 function handleHover(event) {
-    const currentPlayer = players.player1.turn ? players.player1 : players.player2;
+    const currentPlayer = game.players.player1.turn ? game.players.player1 : game.players.player2;
     event.target.innerHTML = currentPlayer.marker;
 }
 
