@@ -1,5 +1,3 @@
-
-// IIFE
 const grid = (function() {
     const gridItems = document.querySelectorAll('.cell');
 
@@ -40,7 +38,6 @@ const grid = (function() {
     };
 })();
 
-
 const players = (function () {
     const player1 = createPlayer('Enter Player 1 name', 'X');
     const player2 = createPlayer('Enter Player 2 name', 'O');
@@ -49,8 +46,6 @@ const players = (function () {
     return {player1, player2}
 })();
 
-
-
 function scores(player) {
     const scoreDiv1 = document.querySelector('.player1')
     scoreDiv1.innerHTML = `${players.player1.name}: ${players.player1.score}`
@@ -58,11 +53,19 @@ function scores(player) {
     scoreDiv2.innerHTML = `${players.player2.name}: ${players.player2.score}`
 }
 
+// const game = (function() {
+//     const gameboard = {
+//     A: [null, null, null],
+//     B: [null, null, null],
+//     C: [null, null, null],
+//     }
+// })();
+
 const gameboard = {
-    A: [null, null, null],
-    B: [null, null, null],
-    C: [null, null, null],
-};
+        A: [null, null, null],
+        B: [null, null, null],
+        C: [null, null, null],
+}
 
 function updateBoard(player, row, col) {
     document.getElementById(row + (col)).innerHTML = player.marker;
@@ -83,7 +86,6 @@ function createPlayer(promptMessage, marker) {
 
 function handleClick(event) {
     const currentPlayer = players.player1.turn ? players.player1 : players.player2;
-    console.log(currentPlayer)
     if ((event.target.innerHTML === currentPlayer.marker) && !event.target.getAttribute('clicked')) {
         event.target.setAttribute('clicked', true)
         event.target.removeEventListener('mouseover', handleHover)
