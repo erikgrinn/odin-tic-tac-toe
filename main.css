@@ -21,7 +21,7 @@ body {
 .header {
     margin-top: 35px;
     display: flex;
-    width: 100%;
+    width: 75%;
     font-size: 54px;
     align-items: center;
     justify-content: space-evenly;
